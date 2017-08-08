@@ -1,0 +1,24 @@
+{
+  "name": "wish-list",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "istanbul cover --include-all-sources jasmine",
+    "lint": "./node_modules/.bin/eslint ../../../App/"
+  },
+  "author": "DevInt22",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.17.2",
+    "express": "^4.15.3",
+    "mongoose": "^4.11.4"
+  },
+  "devDependencies": {
+    "eslint": "^4.3.0",
+    "istanbul": "^0.4.5",
+    "jasmine": "^2.6.0",
+    "mockery": "^2.1.0"
+  }
+}
