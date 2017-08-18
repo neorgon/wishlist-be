@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node index.js",
     "test": "istanbul cover --include-all-sources jasmine",
-    "lint": "./node_modules/.bin/eslint ../../../App/"
+    "lint": "./node_modules/.bin/eslint ./App"
   },
   "author": "DevInt22",
   "license": "ISC",

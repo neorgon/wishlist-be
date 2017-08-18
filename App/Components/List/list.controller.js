@@ -2,8 +2,7 @@
 const ListModel = require('./list.model.js');
 class ListController {
   static getList (req, res, next) {
-
-    return ListModel.getAllList(req.params.ownerName).
+    return ListModel.getAllList(req.query).
       then(lists => {
         res.status(200).send({ data: lists });
       }).
@@ -14,16 +13,16 @@ class ListController {
       });
   }
   static addItem (req, res, next) {
-    return ListModel.addItemInList(req.params.listName, req.body.item).
+    return ListModel.addItemInList(req.params.listId, req.body.item).
       then(list => {res.status(200).send({ data: list });}).
       catch(err => {
-        res.status(600);
+        res.status(204);
         next(err);
       });
   }
 
   static getItems (req, res, next) {
-    return ListModel.getAllItemsFromList(req.params.listID).
+    return ListModel.getAllItemsFromList(req.params.listId).
       then(listsItems => res.status(200).send({ data: listsItems })).
       catch(err => {
         res.status(400);
@@ -33,21 +32,24 @@ class ListController {
 
   static addList (req, res, next) {
     return ListModel.saveList(req.body)
-      .then(list => res.status(200).send({ data: list }))
+      .then(list => {
+        res.status(200).send({
+          data: {
+            id: list.id,
+            type: 'List',
+            attributes: {
+              name: list.name,
+              owner: list.owner,
+              description: list.description,
+              image: list.image
+            }
+          }
+        });
+      })
       .catch(err => {
         res.status(400);
         next(err);
       });
   }
-
-  static getItem (req, res, next) {
-    return ListModel.getItemByName(req.params.listName, req.params.itemName)
-      .then(item => res.status(200).send({ data: item }))
-      .catch(err => {
-        res.status(500);
-        next(err);
-      });
-  }
 }
-
 module.exports = ListController;

@@ -2,20 +2,10 @@
 const mockery = require('mockery');
 let ListController;
 class ListModelMock {
-  static addItemInList () {
-
-  }
-
-  static getAllItemsFromList () {
-
-  }
-  static getAllList () {
-
-  }
-
-  static saveList () {
-
-  }
+  static addItemInList () {}
+  static getAllItemsFromList () {}
+  static getAllList () {}
+  static saveList () { }
 }
 
 const res = {
@@ -57,7 +47,7 @@ describe('List Controller', () => {
           }]
         }));
 
-      ListController.addItem({ params: { listName: 'list' },
+      ListController.addItem({ params: { listId: '598ba8bd5cc6e144da1abe82' },
         body: { 'item': { 'name': 'ads', 'price': 23, 'quantity': 43 } } },
       res).
         then(() => {
@@ -150,7 +140,7 @@ describe('List Controller', () => {
   });
 
   describe('Add a new List', () => {
-    it('should retrieve the new list ', done => {
+    it('should save a new list and return it in the response', done => {
       spyOn(res, 'status').and.callThrough();
       spyOn(res, 'send');
       spyOn(ListModelMock, 'saveList').and.returnValue(
@@ -186,11 +176,9 @@ describe('List Controller', () => {
           done();
         });
     });
-
-  });
 });
 
-describe('suite test for the list controller', () => {
+describe('Get lists by id', () => {
   beforeEach(() => {
     mockery.enable({
       warnOnReplace: false,
@@ -225,7 +213,7 @@ describe('suite test for the list controller', () => {
       ]
     ));
 
-    ListController.getList({ params: { ownerName: 'pepe' } }, res)
+    ListController.getList({ ownerName: 'pepe' }, res)
       .then(() => {
         expect(ListModelMock.getAllList).toHaveBeenCalled();
 

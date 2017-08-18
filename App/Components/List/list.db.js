@@ -20,7 +20,7 @@ const ListSchema = new Schema(
       required: false,
       trim: true
     },
-    pathImage: {
+    image: {
       type: String,
       required: false
     },

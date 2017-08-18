@@ -1,13 +1,13 @@
 'use strict';
 const ListController = require('./list.controller.js');
-const ListSchema = require('./list.controller-schema.js');
+const addListSchema = require('./list.add-list-schema');
+const addItemSchema = require('./list.add-item-schema');
 const { validateSchema } = require('./../../Middlewares/schema-validation.middleware.js');
 
 module.exports = router => {
-  router.get(`/:ownerName`, ListController.getList);
-  router.get(`/:listID/items`, ListController.getItems);
-  router.post(`/`, validateSchema(ListSchema.addListSchema), ListController.addList);
-  router.post('/:listName', validateSchema(ListSchema.addItemSchema), ListController.addItem);
-  router.get('/:listName/:itemName', ListController.getItem);
+  router.get('/', ListController.getList);
+  router.get('/:listId/items', ListController.getItems);
+  router.post('/', validateSchema(addListSchema), ListController.addList);
+  router.post('/:listId/items', validateSchema(addItemSchema), ListController.addItem);
   return router;
 };
