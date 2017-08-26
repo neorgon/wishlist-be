@@ -9,5 +9,6 @@ module.exports = router => {
   router.get('/:listId/items', ListController.getItems);
   router.post('/', validateSchema(addListSchema), ListController.addList);
   router.post('/:listId/items', validateSchema(addItemSchema), ListController.addItem);
+  router.delete('/:listId', ListController.deleteList);
   return router;
 };

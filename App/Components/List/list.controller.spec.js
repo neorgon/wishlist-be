@@ -6,6 +6,7 @@ class ListModelMock {
   static getAllItemsFromList () {}
   static getAllList () {}
   static saveList () { }
+  static deleteListById () {}
 }
 
 const res = {
@@ -86,6 +87,8 @@ describe('List Controller', () => {
         Promise.resolve({
           name: 'marriage',
           owner: 'alejandro',
+          description: 'lista de prueba',
+          image: 'as190e2910192192dkdmkio',
           item: [{
             name: 'item 1',
             price: 10,
@@ -101,13 +104,15 @@ describe('List Controller', () => {
         })
       );
 
-      ListController.getItems({ params: { listName: 'marriage' } }, res)
+      ListController.getItems({ params: { idList: '02sd5d1q6c5asd10sad' } }, res)
         .then(() => {
           expect(res.status).toHaveBeenCalledWith(200);
           expect(res.send).toHaveBeenCalledWith({
             'data': {
               'name': 'marriage',
               'owner': 'alejandro',
+              'description': 'lista de prueba',
+              'image': 'as190e2910192192dkdmkio',
               'item': [{
                 'name': 'item 1',
                 'price': 10,
@@ -145,12 +150,11 @@ describe('List Controller', () => {
       spyOn(res, 'send');
       spyOn(ListModelMock, 'saveList').and.returnValue(
         Promise.resolve({
-          '__v': 0,
-          'pathImage': 'pathimage',
+          'image': 'image',
           'description': 'new list',
           'owner': 'dev22',
           'name': 'newlist2334',
-          '_id': '598c90213e573c0e37c81eec',
+          'id': '598c90213e573c0e37c81eec',
           'item': []
         }));
 
@@ -158,69 +162,128 @@ describe('List Controller', () => {
         'name': 'newlist2334',
         'owner': 'dev22',
         'description': 'new list',
-        'pathImage': 'pathimage'
+        'image': 'image'
       } }, res).
         then(() => {
           expect(ListModelMock.saveList).toHaveBeenCalled();
           expect(res.status).toHaveBeenCalledWith(200);
           expect(res.send).toHaveBeenCalledWith({ 'data': {
-            '__v': 0,
-            'pathImage': 'pathimage',
-            'description': 'new list',
-            'owner': 'dev22',
-            'name': 'newlist2334',
-            '_id': '598c90213e573c0e37c81eec',
-            'item': []
+            'id': '598c90213e573c0e37c81eec',
+            'type': 'List',
+            'attributes': {
+              'image': 'image',
+              'description': 'new list',
+              'owner': 'dev22',
+              'name': 'newlist2334'
+            }
           }
           });
           done();
         });
     });
-});
-
-describe('Get lists by id', () => {
-  beforeEach(() => {
-    mockery.enable({
-      warnOnReplace: false,
-      warnOnUnregistered: false,
-      useCleanCache: true
-    });
-    mockery.registerMock('./list.model.js', ListModelMock);
-    ListController = require('./list.controller.js');
   });
 
-  it('getList should give a list with names', done => {
-    spyOn(res, 'status').and.callThrough();
-    spyOn(res, 'send');
-    spyOn(ListModelMock, 'getAllList').and.returnValue(Promise.resolve(
-      [
-        {
-          _id: '598350321f2e0a24b38bcdbe',
-          name: 'pepe-list'
-        },
-        {
-          _id: '59836f6b4e983a0ff6bb6b03',
-          name: 'pepe-list'
-        },
-        {
-          _id: '59836fbab24ff911c8a82b1b',
-          name: 'pepe-list'
-        },
-        {
-          _id: '59836fe6b24ff911c8a82b1d',
-          name: 'pepe-list'
-        }
-      ]
-    ));
+  describe('Delete Lists', () => {
+    it('should delete lists by list id and return number of list deleted it in the response', done => {
+      spyOn(res, 'status').and.callThrough();
+      spyOn(res, 'send');
+      spyOn(ListModelMock, 'deleteListById').and.returnValue(
+        Promise.resolve({
+          '_id': '5996e6dd44a9f30d5d66256d',
+          'pathImage': 'adkas;ljkl nvkvnkdfnv',
+          'description': 'new list',
+          'owner': 'dev22',
+          'name': 'newlist2334',
+          '__v': 0,
+          'item': []
+        }));
 
-    ListController.getList({ ownerName: 'pepe' }, res)
-      .then(() => {
-        expect(ListModelMock.getAllList).toHaveBeenCalled();
+      ListController.deleteList({ params: { listId: '5996e6dd44a9f30d5d66256d' } }, res).
+        then(() => {
+          expect(ListModelMock.saveList).toHaveBeenCalled();
+          expect(res.status).toHaveBeenCalledWith(200);
+          expect(res.send).toHaveBeenCalledWith({ 'data': {
+            '_id': '5996e6dd44a9f30d5d66256d',
+            'pathImage': 'adkas;ljkl nvkvnkdfnv',
+            'description': 'new list',
+            'owner': 'dev22',
+            'name': 'newlist2334',
+            '__v': 0,
+            'item': []
+          }
+          });
+        });
+      done();
+    });
+  });
 
-        expect(res.status).toHaveBeenCalledWith(200);
+  describe('Delete Lists that doesn\'t exist', () => {
+    it('should try delete lists by list id and return error', done => {
+      spyOn(res, 'status').and.callThrough();
+      spyOn(res, 'send');
+      spyOn(ListModelMock, 'deleteListById').and.returnValue(
+        Promise.reject({
+          'title': 'List not delete',
+          'description': 'The list with that field doesn\'t exist'
+        }));
 
-        expect(res.send).toHaveBeenCalledWith(
-          { data:
+      ListController.deleteList({ params: { listId: '5995be248a4cec10b7a5eb42' } }, res).
+        then(() => {
+          expect(ListModelMock.saveList).toHaveBeenCalled();
+          expect(res.status).toHaveBeenCalledWith(200);
+          expect(res.send).toHaveBeenCalledWith({
+            'error': {
+              'title': 'List not delete',
+              'description': 'The list with that field doesn\'t exist'
+            }
+          });
+        });
+      done();
+    });
+  });
+
+  describe('Get lists by id', () => {
+    beforeEach(() => {
+      mockery.enable({
+        warnOnReplace: false,
+        warnOnUnregistered: false,
+        useCleanCache: true
+      });
+      mockery.registerMock('./list.model.js', ListModelMock);
+      ListController = require('./list.controller.js');
+    });
+
+    it('getList should give a list with names', done => {
+      spyOn(res, 'status').and.callThrough();
+      spyOn(res, 'send');
+      spyOn(ListModelMock, 'getAllList').and.returnValue(Promise.resolve(
+        [
+          {
+            _id: '598350321f2e0a24b38bcdbe',
+            name: 'pepe-list'
+          },
+          {
+            _id: '59836f6b4e983a0ff6bb6b03',
+            name: 'pepe-list'
+          },
+          {
+            _id: '59836fbab24ff911c8a82b1b',
+            name: 'pepe-list'
+          },
+          {
+            _id: '59836fe6b24ff911c8a82b1d',
+            name: 'pepe-list'
+          }
+        ]
+      ));
+      ListController.getList({ ownerName: 'pepe' }, res)
+        .then(() => {
+          expect(ListModelMock.getAllList).toHaveBeenCalled();
+
+          expect(res.status).toHaveBeenCalledWith(200);
+
+          expect(res.send).toHaveBeenCalledWith(
+            { data:
             [
               {
                 _id: '598350321f2e0a24b38bcdbe',
@@ -239,8 +302,9 @@ describe('Get lists by id', () => {
                 name: 'pepe-list'
               }
             ]
-          });
-        done();
-      });
+            });
+          done();
+        });
+    });
   });
 });

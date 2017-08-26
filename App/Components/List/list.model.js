@@ -11,7 +11,7 @@ class ListModel {
   static getAllList (query) {
     return List.find(query, 'name description').then(list => {
       if (list.length < 1) {
-        const e = new Error('The list with that field don\'t exist');
+        const e = new Error('The list with that field doesn\'t exist');
         e.title = 'list not found';
         throw e;
       }
@@ -19,9 +19,9 @@ class ListModel {
     });
   }
   static getAllItemsFromList (listId) {
-    return List.findOne({ _id: listId }, 'name owner item').then(list => {
+    return List.findOne({ _id: listId }, 'name owner description image item').then(list => {
       if (!list) {
-        const e = new Error('The list with that ID don\'t exist');
+        const e = new Error('The list with that ID doesn\'t exist');
         e.title = 'List not found';
         throw e;
       }
@@ -35,11 +35,26 @@ class ListModel {
   static addItemInList (listId, newItem) {
     return List.findByIdAndUpdate(listId, { $push: { item: newItem } }, { new: true }).then(list => {
       if (!list) {
-        const e = new Error('The list with that id don\'t exist');
+        const e = new Error('The list where you trying to insert an item doesn\'t exist');
         e.title = 'List not found';
         throw e;
+      } else {
+        return list;
       }
-      return list;
+    });
+  }
+
+  static deleteListById (listId) {
+    return List.findByIdAndRemove(listId).then(list => {
+      if (!list) {
+        const e = new Error('The list couldn\'t be deleted');
+        e.title = 'List not delete';
+        throw e;
+      } else {
+        return list;
+      }
+    }).catch(err => {
+      throw err;
     });
   }
 }

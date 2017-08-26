@@ -1,11 +1,13 @@
-const express = require (`express`);
-const mongoose = require (`mongoose`);
-const bodyParser = require (`body-parser`);
+'use strict';
+const express = require(`express`);
+const mongoose = require(`mongoose`);
+const bodyParser = require(`body-parser`);
 const loadRoutes = require(`./App/Components/main.js`);
 
 const PORT   = 3000;
 const HOST   = '0.0.0.0';
-mongoose.connect(`mongodb://localhost:27017/wishlist`);
+const DB_HOST = process.env.DB_HOST || 'localhost';
+mongoose.connect(`mongodb://${DB_HOST}:27017/wishlist`);
 mongoose.Promise = Promise;
 const app = express();
 app.use(bodyParser.json());

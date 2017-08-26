@@ -51,5 +51,14 @@ class ListController {
         next(err);
       });
   }
+
+  static deleteList (req, res, next) {
+    return ListModel.deleteListById(req.params.listId).
+      then(result => res.status(200).send({ data: result })).
+      catch(err => {
+        res.status(404);
+        next(err);
+      });
+  }
 }
 module.exports = ListController;
